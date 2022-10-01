@@ -3,8 +3,13 @@ package helper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import org.jsoup.Jsoup;
 
 public class ReadWord {
     public static void readWordBufferedReader(TreeMap<String, Integer> frequencyData, BufferedReader  reader) {
@@ -48,32 +53,47 @@ public class ReadWord {
         }
     }
 
-    public static void readWordNewFile(TreeMap<String, Integer> frequencyData, TreeMap<String, Integer> frequencyNewData, File file, boolean bOrderbyFreq) {
-        Scanner wordFile;
+    public static void readWordNewFile(TreeMap<String, Integer> frequencyData, TreeMap<String, Integer> frequencyNewData, 
+            String urlText, Scanner wordFile, boolean bOrderbyFreq) {
         String word; // A word read from the file
         Integer count; // The number of occurrences of the
         Integer start = 1;
-        try {
-            wordFile = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            System.err.println(e);
-            return;
-        }
-        wordFile.useDelimiter("[^a-zA-Z]+");
-        while (wordFile.hasNext()) {
-            word = wordFile.next().trim();
-            if (bOrderbyFreq) {
+        
+        if(urlText != null && urlText.length() > 0) {
+            //From URL
+            StringTokenizer tokenizer = new StringTokenizer(urlText, ",; ");
+            while (tokenizer.hasMoreElements()) {
+                word = tokenizer.nextToken();
+                if (bOrderbyFreq) {
                 if (!frequencyData.containsKey(word.toLowerCase())) {
                     count = WordUtils.getCount(word, frequencyNewData) + 1;
                     frequencyNewData.put(word, count);
                 }
-            } else {
-                // Order by location
-                if (!frequencyData.containsKey(word.toLowerCase()) && !frequencyNewData.containsKey(word)) {
-                    frequencyNewData.put(word, start++);
+                } else {
+                    // Order by location
+                    if (!frequencyData.containsKey(word.toLowerCase()) && !frequencyNewData.containsKey(word)) {
+                        frequencyNewData.put(word, start++);
+                    }
+                }
+            }
+        } else {
+            //From local file
+            wordFile.useDelimiter("[^a-zA-Z]+");
+            while (wordFile.hasNext()) {
+                word = wordFile.next().trim().replaceAll("<[^>]*>", "").replaceAll("<.*?", "");
+                word = Jsoup.parse(word).text();
+                if (bOrderbyFreq) {
+                    if (!frequencyData.containsKey(word.toLowerCase())) {
+                        count = WordUtils.getCount(word, frequencyNewData) + 1;
+                        frequencyNewData.put(word, count);
+                    }
+                } else {
+                    // Order by location
+                    if (!frequencyData.containsKey(word.toLowerCase()) && !frequencyNewData.containsKey(word)) {
+                        frequencyNewData.put(word, start++);
+                    }
                 }
             }
         }
     }
-    
 }

@@ -7,16 +7,22 @@ import javax.swing.UIManager;
 import static helper.Constants.*;
 import helper.ProcessFile;
 import helper.OrderMethod;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class WordTool extends javax.swing.JDialog {
 
     String DEFAULT_FOLDER = System.getProperty("user.home");
 
     public WordTool(String title, boolean modal) {
-        //super(title, modal);
         initComponents();
         setTitle(title);
         //  setSize(new Dimension(X_SIZE, Y_SIZE));
@@ -292,30 +298,45 @@ public class WordTool extends javax.swing.JDialog {
 
     private void OKButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKButtonActionPerformed
         String fileUrl = inputFileTextField.getText();
+        Scanner fileScanner = null;
+        String urlText = null;
         try {
-        URL url = new URL(fileUrl);
-        Scanner s = new Scanner(url.openStream());
+            Document doc = Jsoup.connect(fileUrl)       
+            .userAgent("Firefox")
+            .timeout(3000)
+            .get();
+            urlText = doc.body().text();
+            System.out.println("!!!!!!!!!!!!!!!!From URL: " + urlText);
         // read from your scanner
-     }
-     catch(IOException ex) {
-        // there was some connection problem, or the file did not exist on the server,
-        // or your URL was not in the right format.
-        // think about what to do now, and put it here.
-        ex.printStackTrace(); // for now, simply output it.
-     }
-        File file = new File(inputFileTextField.getText());
-        if (!file.exists() || !file.isFile()) {
-            messageField.setText("Please select a valid input file.");
-        } else {
-            messageField.setText("");
-            ProcessFile process = new ProcessFile(file, (String) wordListComboBox.getSelectedItem(),
-                    savingFolderTextField.getText(), getOrderMethod(), increaseRadioButton.isSelected());
-            if (lookupRadioButton.isSelected()) {
-                process.lookup();
+        }
+        catch(IOException ex) {
+            // there was some connection problem, or the file did not exist on the server,
+            // or your URL was not in the right format.
+            // think about what to do now, and put it here.
+
+            File file = new File(inputFileTextField.getText());
+            if (!file.exists() || !file.isFile()) {
+                messageField.setText("Please select a valid input file.");
             } else {
-                process.sort();
+                try {
+                    messageField.setText("");
+                    fileScanner = new Scanner(file);
+                } catch (FileNotFoundException ex1) {
+                    Logger.getLogger(WordTool.class.getName()).log(Level.SEVERE, null, ex1);
+                    return;
+                }
             }
         }
+        ProcessFile process;
+        process = new ProcessFile(urlText, fileScanner, (String) wordListComboBox.getSelectedItem(),
+                savingFolderTextField.getText(), getOrderMethod(), increaseRadioButton.isSelected());
+        if (lookupRadioButton.isSelected()) {
+            process.lookup();
+        } else {
+            process.sort();
+        }
+        
+     
     }//GEN-LAST:event_OKButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import meaning.FileText;
 
 public class LookupWord extends Constants {  
     public static void lookupBunch(String symbols[], String savingFolder, int fileIndex) {
@@ -16,24 +15,13 @@ public class LookupWord extends Constants {
         StringBuilder notFoundBuf = new StringBuilder(300);
         int count = 1;
         
-      //  symbols.add(new String("rotund"));
-                
         for (String symbol: symbols) 
         {
-              //  String symbol = "grossly";
+            String addr = CDICT_URL + symbol;
 
-       String addr = CDICT_URL + symbol;
-
-        //String symbol = "grossly";
-        //String addr = "/home/user/WordToolTests/grossly.html";
-                        
- 
             try {
                 TripleStrings Meanings = URLtext.getProcessText(addr);
-                //TripleStrings Meanings = FileText.getProcessText(addr);
-//SString str = HtmlToPlainTextUrl.getSaveText(addr, pathSave + symbol.toUpperCase());
-// String str = HtmlToPlainTextFile.getProcessText(pathSave + symbol.toUpperCase());
-//System.out.println(str);
+
                 String simple = Meanings.getSimple();
                 String more = Meanings.getMore();
                 String detailed = Meanings.getDetailed();

@@ -12,7 +12,6 @@ import java.nio.file.StandardOpenOption;
 public class URLtext {
     public static TripleStrings getProcessText(String url) throws IOException {
         StringBuilder plainText = new StringBuilder(100);
-//System.out.println(url);
 
         Document doc = null;
         
@@ -22,7 +21,7 @@ public class URLtext {
             .timeout(3000)
             .get();   
             
-            System.out.println("Doc:" + doc.toString());
+//            System.out.println("Doc:" + doc.toString());
         }
         catch (Exception ex) {          
             ex.printStackTrace();
@@ -44,7 +43,6 @@ String str = null;
             .timeout(3000)
             .get();   
             
- //           System.out.println("Doc:" + doc.toString());
             Files.write( Paths.get(file), doc.toString().getBytes(), StandardOpenOption.CREATE);
             str = doc.toString();
         }
