@@ -7,27 +7,34 @@ import javax.swing.UIManager;
 import static helper.Constants.*;
 import helper.ProcessFile;
 import helper.OrderMethod;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.HeadlessException;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public class WordTool extends javax.swing.JDialog {
+public class WordLookup extends javax.swing.JDialog {
 
     String DEFAULT_FOLDER = System.getProperty("user.home");
 
-    public WordTool(String title, boolean modal) {
+    public WordLookup(String title, boolean modal) {
         initComponents();
         setTitle(title);
         //  setSize(new Dimension(X_SIZE, Y_SIZE));
-        inputFileTextField.setText(new String(DEFAULT_FOLDER));
-        savingFolderTextField.setText(new String(DEFAULT_FOLDER));
+        inputFileTextField.setText(DEFAULT_FOLDER);
+        savingFolderTextField.setText(DEFAULT_FOLDER);
         pack();
         setVisible(true);
     }
@@ -46,7 +53,6 @@ public class WordTool extends javax.swing.JDialog {
         purposesButtonGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         messageField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
         inputFileBtn = new javax.swing.JButton();
         savingFolderTextField = new javax.swing.JTextField();
         savingFolderBtn = new javax.swing.JButton();
@@ -63,24 +69,31 @@ public class WordTool extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         lookupRadioButton = new javax.swing.JRadioButton();
         countRadioButton = new javax.swing.JRadioButton();
+        outputViewFileBtn = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         OKButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setMinimumSize(new java.awt.Dimension(300, 300));
+        setModal(true);
+        setPreferredSize(new java.awt.Dimension(924, 450));
+        setSize(new java.awt.Dimension(0, 0));
 
+        messageField.setEditable(false);
+        messageField.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         messageField.setForeground(new java.awt.Color(237, 10, 10));
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Message");
-
-        inputFileBtn.setText("Select/Type Input File");
+        inputFileBtn.setText("Input File Or URL");
+        inputFileBtn.setToolTipText("Select or Enter File Name or URL");
         inputFileBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputFileBtnActionPerformed(evt);
             }
         });
 
-        savingFolderBtn.setText("Select/Type Folder For Saving");
+        savingFolderBtn.setText("Output Path");
+        savingFolderBtn.setToolTipText("Enter Output Path");
         savingFolderBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 savingFolderBtnActionPerformed(evt);
@@ -149,66 +162,71 @@ public class WordTool extends javax.swing.JDialog {
             }
         });
 
+        outputViewFileBtn.setText("View Output Files ...");
+        outputViewFileBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                outputViewFileBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(inputFileBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(savingFolderBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGap(18, 18, Short.MAX_VALUE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGap(7, 7, 7)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
+                        .addGap(38, 38, 38)
                         .addComponent(knownWordListLabel)
-                        .addGap(40, 40, 40)))
+                        .addGap(0, 5, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(outputViewFileBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                            .addComponent(savingFolderBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(inputFileBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(40, 40, 40)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(wordListComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(325, 325, 325))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(messageField, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
-                            .addComponent(inputFileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(savingFolderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(23, 23, 23))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(inputFileTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+                            .addComponent(savingFolderTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+                            .addComponent(messageField))
+                        .addGap(32, 32, 32))))
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(171, 171, 171)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
-                        .addComponent(printDirectionLabel))
+                        .addComponent(jLabel2)
+                        .addGap(137, 137, 137)
+                        .addComponent(lookupRadioButton))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(66, 66, 66)
-                        .addComponent(printOrderMethod))
+                        .addComponent(printDirectionLabel)
+                        .addGap(108, 108, 108)
+                        .addComponent(increaseRadioButton))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(103, 103, 103)
-                        .addComponent(jLabel2)))
-                .addGap(115, 115, 115)
+                        .addComponent(printOrderMethod)
+                        .addGap(82, 82, 82)
+                        .addComponent(locationBtn)))
+                .addGap(61, 61, 61)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(increaseRadioButton)
-                    .addComponent(locationBtn)
-                    .addComponent(lookupRadioButton))
-                .addGap(67, 67, 67)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(countRadioButton)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(decreaseRadioButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(countRadioButton)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(occuranceBtn)
-                        .addGap(34, 34, 34)
-                        .addComponent(alphabettaBtn))
-                    .addComponent(decreaseRadioButton))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(alphabettaBtn)
+                        .addGap(53, 53, 53))))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {inputFileBtn, savingFolderBtn});
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {inputFileTextField, messageField, savingFolderTextField});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {inputFileTextField, savingFolderTextField});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,15 +243,14 @@ public class WordTool extends javax.swing.JDialog {
                     .addComponent(savingFolderTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(savingFolderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(messageField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lookupRadioButton)
-                        .addComponent(countRadioButton)))
+                    .addComponent(outputViewFileBtn)
+                    .addComponent(messageField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 44, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(countRadioButton)
+                    .addComponent(jLabel2)
+                    .addComponent(lookupRadioButton))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(printOrderMethod)
@@ -270,27 +287,27 @@ public class WordTool extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(121, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(226, 226, 226)
                 .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cancelButton)
-                .addGap(277, 277, 277))
+                .addGap(279, 279, 279))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(101, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(19, 19, 19)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton)
-                    .addComponent(OKButton))
-                .addContainerGap())
+                    .addComponent(OKButton)
+                    .addComponent(cancelButton))
+                .addGap(16, 16, 16))
         );
 
         pack();
@@ -301,15 +318,14 @@ public class WordTool extends javax.swing.JDialog {
         Scanner fileScanner = null;
         String urlText = null;
         try {
-            Document doc = Jsoup.connect(fileUrl)       
-            .userAgent("Firefox")
-            .timeout(3000)
-            .get();
+            Document doc = Jsoup.connect(fileUrl)
+                    .userAgent("Firefox")
+                    .timeout(3000)
+                    .get();
             urlText = doc.body().text();
             System.out.println("!!!!!!!!!!!!!!!!From URL: " + urlText);
-        // read from your scanner
-        }
-        catch(IOException ex) {
+            // read from your scanner
+        } catch (IOException | IllegalArgumentException ex) {
             // there was some connection problem, or the file did not exist on the server,
             // or your URL was not in the right format.
             // think about what to do now, and put it here.
@@ -322,7 +338,7 @@ public class WordTool extends javax.swing.JDialog {
                     messageField.setText("");
                     fileScanner = new Scanner(file);
                 } catch (FileNotFoundException ex1) {
-                    Logger.getLogger(WordTool.class.getName()).log(Level.SEVERE, null, ex1);
+                    System.out.println("File not found: " + ex1);
                     return;
                 }
             }
@@ -335,8 +351,8 @@ public class WordTool extends javax.swing.JDialog {
         } else {
             process.sort();
         }
-        
-     
+        messageField.setText("Done!");
+
     }//GEN-LAST:event_OKButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -345,7 +361,6 @@ public class WordTool extends javax.swing.JDialog {
 
     private void inputFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputFileBtnActionPerformed
         JFileChooser chooser = new JFileChooser();
-        System.out.println(inputFileTextField.getText());
         chooser.setCurrentDirectory(new File(inputFileTextField.getText()));
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -411,6 +426,37 @@ public class WordTool extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_increaseRadioButtonActionPerformed
 
+    private void outputViewFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputViewFileBtnActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File(savingFolderTextField.getText()));
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File f = chooser.getSelectedFile();
+            JFrame frame = new JFrame();
+            JButton button = new JButton("close");
+            JTextArea textArea = new JTextArea(500, 500);
+            textArea.setFont(new Font("Serif", Font.ITALIC, 16));
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            JScrollPane areaScrollPane = new JScrollPane(textArea);
+            areaScrollPane.setVerticalScrollBarPolicy(
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            areaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            areaScrollPane.setPreferredSize(new Dimension(250, 250));
+            areaScrollPane.add(button);
+            frame.add(areaScrollPane);
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                textArea.read(br, null);
+                frame.setSize(600, 600);
+                frame.show();
+                br.close();
+            } catch (HeadlessException | IOException ex) {
+                System.out.println("Fail to view file: " + ex);
+            }
+        }
+    }//GEN-LAST:event_outputViewFileBtnActionPerformed
+
     private OrderMethod getOrderMethod() {
         OrderMethod orderMethod = OrderMethod.LOCATION;
         if (occuranceBtn.isSelected()) {
@@ -423,10 +469,10 @@ public class WordTool extends javax.swing.JDialog {
 
     public static void main(String argv[]) {
         try {
-            WordTool tool;
-            tool = new WordTool(TITLE, true);
+            WordLookup tool;
+            tool = new WordLookup(TITLE, true);
 
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
             SwingUtilities.invokeAndWait(() -> {
                 tool.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
@@ -437,7 +483,8 @@ public class WordTool extends javax.swing.JDialog {
                 });
 
             });
-        } catch (Exception ex) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | InterruptedException | InvocationTargetException | UnsupportedLookAndFeelException ex) {
+            System.out.println("Exception occurs: " + ex);
         }
     }
 
@@ -450,7 +497,6 @@ public class WordTool extends javax.swing.JDialog {
     private javax.swing.JRadioButton increaseRadioButton;
     private javax.swing.JButton inputFileBtn;
     private javax.swing.JTextField inputFileTextField;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel knownWordListLabel;
@@ -458,6 +504,7 @@ public class WordTool extends javax.swing.JDialog {
     private javax.swing.JRadioButton lookupRadioButton;
     private javax.swing.JTextField messageField;
     private javax.swing.JRadioButton occuranceBtn;
+    private javax.swing.JButton outputViewFileBtn;
     private javax.swing.JLabel printDirectionLabel;
     private javax.swing.ButtonGroup printDirectionRadioGroup;
     private javax.swing.ButtonGroup printMethodRadioButtonGroup;
