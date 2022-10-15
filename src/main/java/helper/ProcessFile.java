@@ -99,7 +99,6 @@ public class ProcessFile {
                 LookupWord.lookupBunch(symList.toArray(new String[0]), savingFolder, fileIndex);
                 symList.clear();
                 fileIndex = fileIndex + 1;
-                System.out.println("Just Done: " + count + " " + Instant.now());
             }
         }
         if (count < WORDCOUNT) {

@@ -38,7 +38,7 @@ public class LookupWord extends Constants {
                 
             }
             catch (Exception ex) {
-                ex.printStackTrace();
+                System.out.println("Fail to process " + addr + " ex: " + ex.getMessage());
             }
             
         }

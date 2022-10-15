@@ -19,21 +19,17 @@ public class URLtext {
             doc = Jsoup.connect(url)       
             .userAgent("Firefox")
             .timeout(3000)
-            .get();   
-            
-//            System.out.println("Doc:" + doc.toString());
+            .get();
+            return FileText.textProcess(doc.toString());
         }
-        catch (Exception ex) {          
-            ex.printStackTrace();
-        }     
-                
-        return FileText.textProcess(doc.toString());
+        catch (Exception ex) {
+            System.out.println("File to process text " + ex.getMessage());
+            return null;
+        }
     }
     
     public static String getSaveText(String url, String file) throws IOException {
-       // StringBuilder plainText = new StringBuilder(100);
-//System.out.println(url);
-String str = null;
+        String str = null;
 
         Document doc = null;
         

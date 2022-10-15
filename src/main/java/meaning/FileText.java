@@ -10,21 +10,13 @@ import java.nio.file.Paths;
 
 public class FileText extends Constants{
     public static String getText(String url) throws IOException {
-        //StringBuilder plainText = new StringBuilder(100);
-        //System.out.println(url);
-        
         String str = new String(Files.readAllBytes(Paths.get(url)));
                       
         return str;
     }
     
     public static TripleStrings getProcessText(String url) throws IOException {
-        //System.out.println(url);
-        
         String str = new String(Files.readAllBytes(Paths.get(url)));
-      //  System.out.println(str);
-      //  Document doc = Jsoup.parse(new File(url), "utf-8");
-                      
         return textProcess(str);
     }  
     
@@ -43,15 +35,9 @@ public class FileText extends Constants{
 
                     for (String token: tokens) {
                         if (token.contains("來源") && !token.contains("看影片學英語")) {
-                          //  System.out.println(token);
-                           // System.out.println("<------->");
                             String brs[] = token.split("<br>");
                             for (int brN = 1; brN < brs.length; brN++) {
-                            //    System.out.println(brs[brN]);
-                         //       System.out.println("++++++++++++++");
-                             //   System.out.println(brs[brN].replaceAll("<.*?>","").trim());
                                 detailedText.append(brs[brN].replaceAll("<.*?>","").trim());
-                        //        System.out.println("-------");
                             }
                             count = count + 1;                            
                             if (count == 1) {

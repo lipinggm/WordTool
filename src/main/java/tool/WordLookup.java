@@ -93,7 +93,7 @@ public class WordLookup extends javax.swing.JDialog {
             }
         });
 
-        wordListComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "20k", "10k", "none" }));
+        wordListComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "400k", "100k", "20k", "10k", "none" }));
         wordListComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 wordListComboBoxActionPerformed(evt);
@@ -245,10 +245,11 @@ public class WordLookup extends javax.swing.JDialog {
                     .addComponent(outputViewFileBtn)
                     .addComponent(messageField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 44, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(countRadioButton)
-                    .addComponent(jLabel2)
-                    .addComponent(lookupRadioButton))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(countRadioButton)
+                        .addComponent(lookupRadioButton)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(printOrderMethod)
@@ -341,6 +342,7 @@ public class WordLookup extends javax.swing.JDialog {
                 }
             }
         }
+        messageField.setText("In Process ... ");
         ProcessFile process;
         process = new ProcessFile(urlText, fileScanner, (String) wordListComboBox.getSelectedItem() + ".txt",
                 savingFolderTextField.getText(), getOrderMethod(), increaseRadioButton.isSelected());
@@ -374,7 +376,6 @@ public class WordLookup extends javax.swing.JDialog {
 
     private void savingFolderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savingFolderBtnActionPerformed
         JFileChooser chooser = new JFileChooser();
-        System.out.println(savingFolderTextField.getText());
         chooser.setCurrentDirectory(new File(savingFolderTextField.getText()));
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
