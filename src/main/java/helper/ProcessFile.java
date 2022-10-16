@@ -47,7 +47,7 @@ public class ProcessFile {
        // String pathSave = getSaveLoc();
 
             
-        Path fileSave = Paths.get(savingFolder + Constants.FOUND_WORD_LIST);
+        Path fileSave = Paths.get(savingFolder + "\\" + Constants.FOUND_WORD_LIST);
         if (fileSave.toFile().exists()) {
             ReadWord.readWordFile(frequencyData, fileSave.toFile());
         }

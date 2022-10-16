@@ -63,6 +63,8 @@ public class WordLookup extends javax.swing.JDialog {
         lookupRadioButton = new javax.swing.JRadioButton();
         countRadioButton = new javax.swing.JRadioButton();
         outputViewFileBtn = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
         cancelButton = new javax.swing.JButton();
         OKButton = new javax.swing.JButton();
 
@@ -167,6 +169,15 @@ public class WordLookup extends javax.swing.JDialog {
             }
         });
 
+        jLabel1.setText("Translate To");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chinese", "Default" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -187,13 +198,14 @@ public class WordLookup extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(wordListComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(325, 325, 325))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(inputFileTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
-                            .addComponent(savingFolderTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
-                            .addComponent(messageField))
-                        .addGap(32, 32, 32))))
+                        .addGap(126, 126, 126)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(inputFileTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+                    .addComponent(savingFolderTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+                    .addComponent(messageField))
+                .addGap(32, 32, 32))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(171, 171, 171)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -231,7 +243,9 @@ public class WordLookup extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(wordListComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(knownWordListLabel))
+                    .addComponent(knownWordListLabel)
+                    .addComponent(jLabel1)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(inputFileBtn)
@@ -343,15 +357,19 @@ public class WordLookup extends javax.swing.JDialog {
             }
         }
         messageField.setText("In Process ... ");
-        ProcessFile process;
-        process = new ProcessFile(urlText, fileScanner, (String) wordListComboBox.getSelectedItem() + ".txt",
-                savingFolderTextField.getText(), getOrderMethod(), increaseRadioButton.isSelected());
-        if (lookupRadioButton.isSelected()) {
-            process.lookup();
-        } else {
-            process.sort();
+        try {
+            ProcessFile process;
+            process = new ProcessFile(urlText, fileScanner, (String) wordListComboBox.getSelectedItem() + ".txt",
+                    savingFolderTextField.getText(), getOrderMethod(), increaseRadioButton.isSelected());
+            if (lookupRadioButton.isSelected()) {
+                process.lookup();
+            } else {
+                process.sort();
+            }
+            messageField.setText("Done!");
+        } catch (Exception e) {
+            messageField.setText("Error Occurs...");
         }
-        messageField.setText("Done!");
 
     }//GEN-LAST:event_OKButtonActionPerformed
 
@@ -448,6 +466,10 @@ public class WordLookup extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_wordListComboBoxActionPerformed
 
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
     private OrderMethod getOrderMethod() {
         OrderMethod orderMethod = OrderMethod.LOCATION;
         if (occuranceBtn.isSelected()) {
@@ -488,6 +510,8 @@ public class WordLookup extends javax.swing.JDialog {
     private javax.swing.JRadioButton increaseRadioButton;
     private javax.swing.JButton inputFileBtn;
     private javax.swing.JTextField inputFileTextField;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel knownWordListLabel;

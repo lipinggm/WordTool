@@ -14,7 +14,7 @@ public class Constants {
     static final String DOT_TXT = ".txt";
     static final String TENK = "10k.txt";
     static final String TWOK = "20k.txt";
-    static final String NONE = "none";
+    static final String NONE = "none.txt";
     static final String CDICT_URL = "https://cdict.net/?q=";
     static final int    WORDCOUNT = 200;
     public static final String TITLE = "Word Tool";
