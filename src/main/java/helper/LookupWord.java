@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 
 public class LookupWord extends Constants {  
     public static void lookupBunch(String symbols[], String savingFolder, int fileIndex) {
@@ -26,6 +27,14 @@ public class LookupWord extends Constants {
                 String more = Meanings.getMore();
                 String detailed = Meanings.getDetailed();
                 if (simple != null && simple.length() != 0) {
+                    String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+                    String timestampHeader = "=======" + timestamp + "======";
+                    if (count == 1) {
+                        simpleMeaningBuf.append(timestampHeader).append("\n");
+                        moreMeaningBuf.append(timestampHeader).append("\n");
+                        detailedMeaningBuf.append(timestampHeader).append("\n");
+                        foundBuf.append(timestampHeader).append("\n");
+                    }
                     simpleMeaningBuf.append(count).append(". ").append(simple).append("\n").append("\n");
                     moreMeaningBuf.append(count).append(". ").append(more).append("\n").append("\n");
                     detailedMeaningBuf.append(count).append(". ").append(detailed).append("\n").append("\n");
