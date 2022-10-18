@@ -17,7 +17,7 @@ public class Constants {
     static final String NONE = "none.txt";
     static final String CDICT_URL = "https://cdict.net/?q=";
     static final int    WORDCOUNT = 200;
-    public static final String TITLE = "Word Tool";
+    public static final String TITLE = "Vocabulary Lookup";
     public static final String A_TO_Z = "A_Z";
     public static final String Z_TO_A = "Z_A";
     public static final String INCREASE = "Incr";
