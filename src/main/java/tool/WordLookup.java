@@ -5,6 +5,8 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import static helper.Constants.*;
+
+import helper.MyMessage;
 import helper.ProcessFile;
 import helper.OrderMethod;
 import java.awt.HeadlessException;
@@ -30,6 +32,7 @@ public class WordLookup extends javax.swing.JDialog {
         savingFolderTextField.setText(DEFAULT_FOLDER);
         pack();
         setVisible(true);
+        myMessage.setStatus(0);
     }
 
     /**
@@ -354,6 +357,10 @@ public class WordLookup extends javax.swing.JDialog {
         String fileUrl = inputFileTextField.getText();
         Scanner fileScanner = null;
         String urlText = null;
+        myMessage = new MyMessage(messageField);
+        myMessage.setStatus(0);
+        Thread t = new Thread(myMessage);
+        t.start();
         try {
             Document doc = Jsoup.connect(fileUrl)
                     .userAgent("Firefox")
@@ -370,16 +377,20 @@ public class WordLookup extends javax.swing.JDialog {
             File file = new File(inputFileTextField.getText());
             if (!file.exists() || !file.isFile()) {
                 messageField.setText("Please select a valid input file.");
+                myMessage.setStatus(2);
+                return;
             } else {
                 try {
                     messageField.setText("Wait ...");
                     fileScanner = new Scanner(file);
                 } catch (FileNotFoundException ex1) {
+                    myMessage.setStatus(2);
                     messageField.setText("File not found ...");
                     return;
                 }
             }
         }
+        myMessage.setStatus(1);
         messageField.setText("In Process ... ");
         try {
             ProcessFile process;
@@ -390,8 +401,10 @@ public class WordLookup extends javax.swing.JDialog {
             } else {
                 process.sort();
             }
+            myMessage.setStatus(2);
             messageField.setText("Lookup is done!");
         } catch (Exception e) {
+            myMessage.setStatus(2);
             messageField.setText("Error Occurs, please verify source or output path ...");
         }
 
@@ -564,5 +577,6 @@ public class WordLookup extends javax.swing.JDialog {
     private javax.swing.JButton savingFolderBtn;
     private javax.swing.JTextField savingFolderTextField;
     private javax.swing.JComboBox<String> wordListComboBox;
+    private MyMessage myMessage;
     // End of variables declaration//GEN-END:variables
 }
