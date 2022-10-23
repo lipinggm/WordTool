@@ -11,15 +11,15 @@ public class MyMessage implements Runnable {
     }
     @Override
     public void run() {
-        while (true) {
+        while (status == 0 || status == 1) {
             try {
                 Thread.sleep(2000);
                 switch (status) {
                     case 0:
-                    default:
                         messageField.setText("");
                         break;
                     case 1:
+                    default:
                         messageField.setText("In Process ... ");
                         break;
 
@@ -28,6 +28,7 @@ public class MyMessage implements Runnable {
                 System.out.println("Check message ...");
             }
         }
+        messageField.setText("Welcome To VocabLookup");
     }
 
     public void setStatus(int status) {
