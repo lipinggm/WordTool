@@ -1,6 +1,6 @@
-package meaning;
+package com.vocallookup.meaning;
 
-import helper.TripleStrings;
+import com.vocallookup.helper.TripleStrings;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 

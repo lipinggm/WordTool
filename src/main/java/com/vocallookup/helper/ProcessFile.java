@@ -1,4 +1,4 @@
-package helper;
+package com.vocallookup.helper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import static helper.Constants.*;
+import static com.vocallookup.helper.Constants.*;
 import java.util.Scanner;
 
 public class ProcessFile {

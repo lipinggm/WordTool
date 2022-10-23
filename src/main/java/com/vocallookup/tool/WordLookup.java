@@ -1,14 +1,14 @@
-package tool;
+package com.vocallookup.tool;
 
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import static helper.Constants.*;
+import static com.vocallookup.helper.Constants.*;
 
-import helper.MyMessage;
-import helper.ProcessFile;
-import helper.OrderMethod;
+import com.vocallookup.helper.MyMessage;
+import com.vocallookup.helper.ProcessFile;
+import com.vocallookup.helper.OrderMethod;
 import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -32,7 +32,6 @@ public class WordLookup extends javax.swing.JDialog {
         savingFolderTextField.setText(DEFAULT_FOLDER);
         pack();
         setVisible(true);
-        myMessage.setStatus(0);
     }
 
     /**
@@ -357,7 +356,7 @@ public class WordLookup extends javax.swing.JDialog {
         String fileUrl = inputFileTextField.getText();
         Scanner fileScanner = null;
         String urlText = null;
-        myMessage = new MyMessage(messageField);
+        MyMessage myMessage = new MyMessage(messageField);
         myMessage.setStatus(0);
         Thread t = new Thread(myMessage);
         t.start();
@@ -577,6 +576,5 @@ public class WordLookup extends javax.swing.JDialog {
     private javax.swing.JButton savingFolderBtn;
     private javax.swing.JTextField savingFolderTextField;
     private javax.swing.JComboBox<String> wordListComboBox;
-    private MyMessage myMessage;
     // End of variables declaration//GEN-END:variables
 }

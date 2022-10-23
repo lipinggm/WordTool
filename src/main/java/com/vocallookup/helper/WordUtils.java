@@ -1,4 +1,4 @@
-package helper;
+package com.vocallookup.helper;
 
 import java.util.Comparator;
 import java.util.Map;

@@ -1,6 +1,6 @@
-package helper;
+package com.vocallookup.helper;
 
-import meaning.URLtext;
+import com.vocallookup.meaning.URLtext;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

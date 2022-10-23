@@ -1,8 +1,8 @@
-package meaning;
+package com.vocallookup.meaning;
 
 
-import helper.Constants;
-import helper.TripleStrings;
+import com.vocallookup.helper.Constants;
+import com.vocallookup.helper.TripleStrings;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

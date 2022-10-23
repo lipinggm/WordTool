@@ -1,4 +1,4 @@
-package helper;
+package com.vocallookup.helper;
 
 public enum OrderMethod {
     LOCATION, 

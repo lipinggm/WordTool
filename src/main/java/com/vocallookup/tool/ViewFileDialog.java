@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Sun Oct 09 17:44:12 EDT 2022
  */
 
-package tool;
+package com.vocallookup.tool;
 
 import java.awt.*;
 import java.awt.event.*;
