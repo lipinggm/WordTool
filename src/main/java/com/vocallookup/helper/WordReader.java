@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import org.jsoup.Jsoup;
 
-public class ReadWord {
+public class WordReader {
     public static void readWordBufferedReader(TreeMap<String, Integer> frequencyData, BufferedReader  reader) {
         String word;
         Integer count;

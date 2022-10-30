@@ -9,8 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-public class URLtext {
-    public static TripleStrings getProcessText(String url) throws IOException {
+public class DictionaryClient {
+    public static TripleStrings dictionaryLookup(String url) throws IOException {
         StringBuilder plainText = new StringBuilder(100);
 
         Document doc = null;
@@ -20,7 +20,7 @@ public class URLtext {
             .userAgent("Firefox")
             .timeout(3000)
             .get();
-            return FileText.textProcess(doc.toString());
+            return DocParser.parse(doc.toString());
         }
         catch (Exception ex) {
             System.out.println("File to process text " + ex.getMessage());

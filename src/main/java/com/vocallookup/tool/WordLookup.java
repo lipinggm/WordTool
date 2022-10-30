@@ -7,7 +7,7 @@ import javax.swing.UIManager;
 import static com.vocallookup.helper.Constants.*;
 
 import com.vocallookup.helper.MyMessage;
-import com.vocallookup.helper.ProcessFile;
+import com.vocallookup.helper.FileProcessor;
 import com.vocallookup.helper.OrderMethod;
 import java.awt.HeadlessException;
 import java.io.BufferedReader;
@@ -396,13 +396,13 @@ public class WordLookup extends javax.swing.JDialog {
         myMessage.setStatus(1);
         messageField.setText("In Process ... ");
         try {
-            ProcessFile process;
-            process = new ProcessFile(urlText, fileScanner, (String) wordListComboBox.getSelectedItem() + ".txt",
+            FileProcessor process;
+            process = new FileProcessor(urlText, fileScanner, (String) wordListComboBox.getSelectedItem() + ".txt",
                     savingFolderTextField.getText(), getOrderMethod(), increaseRadioButton.isSelected());
             if (lookupRadioButton.isSelected()) {
                 process.lookup();
             } else {
-                process.sort();
+                process.retrieveNewWords();
             }
             myMessage.setStatus(2);
             messageField.setText("Lookup is done!");

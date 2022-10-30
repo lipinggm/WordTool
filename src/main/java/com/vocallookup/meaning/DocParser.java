@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 
-public class FileText extends Constants{
+public class DocParser extends Constants{
     public static String getText(String url) throws IOException {
         String str = new String(Files.readAllBytes(Paths.get(url)));
                       
@@ -17,10 +17,10 @@ public class FileText extends Constants{
     
     public static TripleStrings getProcessText(String url) throws IOException {
         String str = new String(Files.readAllBytes(Paths.get(url)));
-        return textProcess(str);
+        return parse(str);
     }  
     
-    public static TripleStrings textProcess(String str) {
+    public static TripleStrings parse(String str) {
         StringBuilder simpleText = new StringBuilder(200);    
         StringBuilder moreText = new StringBuilder(200);
         StringBuilder detailedText = new StringBuilder(1000);

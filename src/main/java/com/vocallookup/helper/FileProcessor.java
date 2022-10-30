@@ -16,15 +16,15 @@ import java.util.TreeMap;
 import static com.vocallookup.helper.Constants.*;
 import java.util.Scanner;
 
-public class ProcessFile {
+public class FileProcessor {
     String urlText; //Only can contain 2,147,483,647 characters
     Scanner file;
     String knownWordList;
     String savingFolder;
     boolean bPrintIncOrder;
     OrderMethod orderMethod;
-    public ProcessFile (String urlText, Scanner file, String knownWordList, String savingFolder, 
-                        OrderMethod orderMethod, boolean bPrintIncOrder) {
+    public FileProcessor(String urlText, Scanner file, String knownWordList, String savingFolder,
+                         OrderMethod orderMethod, boolean bPrintIncOrder) {
         this.urlText = urlText;
         this.file = file;
         this.knownWordList = knownWordList;
@@ -33,7 +33,7 @@ public class ProcessFile {
         this.bPrintIncOrder = bPrintIncOrder;
     }
 
-    public TreeMap<String, Integer> sort() {
+    public TreeMap<String, Integer> retrieveNewWords() {
         TreeMap<String, Integer> frequencyData = new TreeMap<>();
         TreeMap<String, Integer> frequencyNewData = new TreeMap<>();
  
@@ -41,7 +41,7 @@ public class ProcessFile {
         if (!knownList.endsWith(Constants.NONE)) {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(knownList);
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));           
-            ReadWord.readWordBufferedReader(frequencyData, reader);            
+            WordReader.readWordBufferedReader(frequencyData, reader);
         }
         
        // String pathSave = getSaveLoc();
@@ -49,14 +49,14 @@ public class ProcessFile {
             
         Path fileSave = Paths.get(savingFolder + "\\" + Constants.FOUND_WORD_LIST);
         if (fileSave.toFile().exists()) {
-            ReadWord.readWordFile(frequencyData, fileSave.toFile());
+            WordReader.readWordFile(frequencyData, fileSave.toFile());
         }
         if (orderMethod == OrderMethod.LOCATION) {
-            ReadWord.readWordNewFile(frequencyData, frequencyNewData, urlText, file, false);
+            WordReader.readWordNewFile(frequencyData, frequencyNewData, urlText, file, false);
             PrintTreeMap.printAllCountsBySize(frequencyNewData, !bPrintIncOrder, ORDER_OF_OCCURRENCE);       
         }
         else {
-            ReadWord.readWordNewFile(frequencyData, frequencyNewData, urlText, file, true);     
+            WordReader.readWordNewFile(frequencyData, frequencyNewData, urlText, file, true);
             if (orderMethod == OrderMethod.OCCURANCE) {
                 PrintTreeMap.printAllCountsBySize(frequencyNewData, !bPrintIncOrder, NUMBER_OF_OCCURRENCE);       
             }
@@ -69,7 +69,7 @@ public class ProcessFile {
     }
 
     public void lookup() {
-        TreeMap<String, Integer> frequencyNewData = sort();
+        TreeMap<String, Integer> frequencyNewData = retrieveNewWords();
         System.out.println("Start: " + " " + Instant.now());
         File dir = new File(savingFolder);
         int fileIndex = 0;
@@ -96,13 +96,13 @@ public class ProcessFile {
             symList.add((String) me.getKey());
             count = count + 1;
             if (count % WORDCOUNT == 0) {
-                LookupWord.lookupBunch(symList.toArray(new String[0]), savingFolder, fileIndex);
+                WordProcessor.lookupBunch(symList.toArray(new String[0]), savingFolder, fileIndex);
                 symList.clear();
                 fileIndex = fileIndex + 1;
             }
         }
         if (count < WORDCOUNT) {
-            LookupWord.lookupBunch(symList.toArray(new String[0]), savingFolder, fileIndex);
+            WordProcessor.lookupBunch(symList.toArray(new String[0]), savingFolder, fileIndex);
         }
         System.out.println("All Done: " + Instant.now());
     }

@@ -1,13 +1,13 @@
 package com.vocallookup.helper;
 
-import com.vocallookup.meaning.URLtext;
+import com.vocallookup.meaning.DictionaryClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 
-public class LookupWord extends Constants {  
+public class WordProcessor extends Constants {
     public static void lookupBunch(String symbols[], String savingFolder, int fileIndex) {
         StringBuilder simpleMeaningBuf = new StringBuilder(2000);
         StringBuilder moreMeaningBuf = new StringBuilder(2000);
@@ -21,7 +21,7 @@ public class LookupWord extends Constants {
             String addr = CDICT_URL + symbol;
 
             try {
-                TripleStrings Meanings = URLtext.getProcessText(addr);
+                TripleStrings Meanings = DictionaryClient.dictionaryLookup(addr);
 
                 String simple = Meanings.getSimple();
                 String more = Meanings.getMore();
